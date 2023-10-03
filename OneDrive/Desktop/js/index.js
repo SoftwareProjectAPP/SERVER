@@ -49,33 +49,43 @@ const Users = sequelize.define('user', {
 
 });
 
+
 // DELETES CONTENTS FROM TABLE
-/*
-Users.sync({alter: true}).then(() => {
-    return Users.destroy({truncate: true});
-}).then((data) => {
-    console.log(data);
-})
-.catch((err) => {
-    console.log(err);
-});
-*/
+async function deleteAll() 
+{
+    await Users.sync({alter: true}).then(() => 
+    {
+        return Users.destroy({truncate: true});
+    }).then((data) => 
+    {
+        console.log(data);
+    })
+    .catch((err) => 
+    {
+        console.log(err);
+    });
+}
 
 
-/*Users.sync({alter: true}).then((data) => {                              // create makes 1 entry, bulk does multiple
+// single add
+async function add()
+{
+    await Users.sync({alter: true}).then((data) => {                            
     return Users.create({
         username: "Bryan1",
         password: "Poop",
         achieve1: true
-    }
-)});
-*/
-
+    });
+}).then((data) => {
+    console.log(data.toJSON());
+})
+}
 
 
 // bulk add
-///*
-Users.sync({alter: true}).then((data) => {                              // Alter changes sql workshop with each run
+async function bulkAdd()
+{
+    Users.sync({alter: true}).then((data) => {                             
     return Users.bulkCreate([{
         username: "Bryan",
         password: "Poop",
@@ -96,19 +106,17 @@ Users.sync({alter: true}).then((data) => {                              // Alter
         password: "Piss",
         achieve1: true
     }
-]); 
-
-
-// message to show added users
-
+]);
 }).then((data) => {
     console.log("Users added to database")
     data.forEach(element => {
-        console.log(element.toJSON())                                   //data.toJSON shows changed to table in cmd, element used for bulk
+        console.log(element.toJSON())                                  
     });
 }).catch((err) => {
     console.log(err)
 });
-//*/
+}
 
-//console.log(sequelize.models.user);                                     // This prints user table in cmd
+//bulkAdd();
+//add();
+//deleteAll();
