@@ -3,9 +3,21 @@
 // then "npm install mysql2, then the code is ready to test using "node index.js""
 
 const Sequelize = require('sequelize');
-const { DataTypes } = Sequelize;
+const config = require('./config/database');
 
-const sequelize = new Sequelize('trailblazerdb', 'root', 'root',        //root is user and pass
+// models
+const UserModel = require ('./models/Users');
+const AuthModel = require('./models/Auth');
+const AchievementsModel = require('./models/Achievements');
+const AchievementUserModel = require('./models/AchievementUser');
+const TrailModel = require('./models/Trail');
+const TrailCheckListModel = require('./models/TrailCheckList');
+
+// connect to database
+const sequelize = new Sequelize(
+    config.database, 
+    config.database_username,
+    config.database_password,        //root is user and pass
 {             
     //host: For google
     //port:
@@ -21,146 +33,22 @@ const sequelize = new Sequelize('trailblazerdb', 'root', 'root',        //root i
 })*/ 
 
 //User Table
-const Users = sequelize.define('user', {
-    user_id:{
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    username: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    email: {
-        type: DataTypes.STRING,
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-},
-{
-    freezeTableName: true,                                              //takes away auto pluralization
-    timestamps: false,                                                  // takes away timestamps in table
 
-});
+// create models
+const Users = UserModel(sequelize,Sequelize);
+const Auth = AuthModel(sequelize,Sequelize,Users);
+const Achievements = AchievementsModel(sequelize,Sequelize);
+const AchievementUser = AchievementUserModel(sequelize,Sequelize,Users,Achievements);
+const Trail = TrailModel(sequelize,Sequelize);
+const TrailCheckList = TrailCheckListModel(sequelize,Sequelize,Trail);
 
-const Pictures = sequelize.define('pic', 
-{
-    id:
-    {
-      type: DataTypes.INTEGER,
-      primaryKey:true,
-      autoIncrement:true
-    },
-    user_id:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: 
-        {
-            model:Users,
-            key:'user_id'
-        }
-    },
-    image_URL: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    audio_URL: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    Name: {
-        type: DataTypes.STRING,
-        allowNull: false
-    }
-},
-{
-    freezeTableName: true,                                              
-    timestamps: false,                                                 
+// connect trails and trail checklist
+Trail.hasMany(TrailCheckList,{foreignKey: 'trailId'});
+TrailCheckList.belongsTo(Trail, {foreignKey: 'trailId'});
 
-});
-
-const Achievements = sequelize.define('Achievements', 
-{
-    id:
-    {
-      type: DataTypes.INTEGER,
-      primaryKey:true,
-      autoIncrement:true
-    },
-    user_id:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: 
-        {
-            model:Users,
-            key:'user_id'
-        }
-    },
-    Achieve1: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
-    },
-    Achieve2: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
-    },
-    Achieve3: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
-    }
-},
-{
-    freezeTableName: true,                                              
-    timestamps: false,                                                  
-
-});
-
-const moment = require('moment');
-const Auth = sequelize.define('auth_token',
-{
-    id:
-    {
-      type: DataTypes.INTEGER,
-      primaryKey:true,
-      autoIncrement:true
-    },
-    token:
-    {
-      type: DataTypes.STRING,
-      allowNull:false,
-      validate:
-      {
-        notEmpty:true
-      }
-    },
-    user_id:{
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references:
-      {
-        model:Users,
-        key:'user_id'
-      }
-    },
-    is_valid:
-    {
-      type: DataTypes.BOOLEAN,
-      defaultValue:true
-    },
-    issue_date:
-    {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
-    },
-    expiration_date:
-    {
-      type: DataTypes.DATE,
-      defaultValue:moment().add(1,'days').toDate()
-    }
-  },{
-    timestamps:false
+// synchronize tables
+sequelize.sync().then(()=>{
+    console.log("Tables synchronized");
 });
 
 
@@ -300,9 +188,8 @@ async function addauth()
 //deleteUsers();
 //sequelize.query('SET GLOBAL FOREIGN_KEY_CHECKS = 1;', { raw: true });
 
-
-
+// export all models for usage
 module.exports = 
 {
-  Users, Pictures, Achievements, Auth
+  Users, Trail, TrailCheckList,Achievements, Auth, AchievementUser
 }
