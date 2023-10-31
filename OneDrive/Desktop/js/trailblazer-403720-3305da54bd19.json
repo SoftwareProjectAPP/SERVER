@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "trailblazer-403720",
+  "private_key_id": "3305da54bd19b39e3fceeb22e13cdcf3a3a9fc72",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCvlY3wEIxMn9jI\nIvm9XgLvdfEQAMgTgPqZwPc34KJis4EFU/cNPZh2siqCCnkIU2e04xVBs3k/VQPi\nnn2wI6NrI9w9rOKfacm7mk2GOhBOK9UL08dT89uqFD3ZToel7asbPx5e93w5fNhK\nY+qxx7PeqIuZFQhjdCOA7O2wb6/QDWy/hjU5T+45jtVeqd1TPLzv7ZkS0ym1VJcm\n7CCiKUDgyMD5PHZswblK3B0B/hfxsBbURWiSiTgomN830Uybbr2gehzpb4Aae8or\nnx87GUZdtPbY5K/GD5q85eAi41MFxcBmFWwP03hnGZxif1GBTIhhoLXbgkUSoCCP\nmSa33rZzAgMBAAECggEAC3XJ8VjLJ3cpaYqq3TrFG0cJ6F78sBUzhhSLrjh5sNKB\ngc0Eq3cRO/IOBzXSx4HWG37U1Nh3efQ9EC4DCxuQX35UMixWEEyRz65XEAM7LDb9\nLUvxzx9z/2pZzRSskt5r1BfvDgi+MWxeG6Dg4SClM0ux7NhsFz2t0YzlSKZJhd02\nxeUCnWR1JDsv2hIV332gJLeDXbMxx7wfCCvKCeZe7EYz7JzKXhn5oHKU89n9+DTw\n/m6OywrMcgW7faY67dBEn9vMUafJuTfeNiu886HgqYu6O/hP09yrEnerpovD/CBY\ny6/3otLEZPO83ckjt5g3xsjDf5F9i9IH0WBlCduRpQKBgQDWUjoF51C520ROnO4k\nBAzn0RCVr5lGvoJDf1oCsIPY/fq8EOlIy/Rrz0ojirvdkuFN2uJ7OmGIofXhcsrU\nA79iWcfYYkVH56GUl2q6gz7RHYngrN5avVtAc5m14qbhurSHKNO9I8FSx/TXBPlV\nZOBX91HPmI+Z5rVZ39QG6JjmxQKBgQDRutf9Q2O/S1RdzifQE7Kupc+xLG5+g3DC\nLSmMxWyAPEUig3AtAZXt+Efyy/oXhuGgC7JkUPe/hBzIANSF756xTNXd3Igg24dS\n7puvDqSqur5ixAGOcqLC5H+3kbG+LKyu/P50X5VZy8hJY4IBNsog2spKCcsxJxhA\nmkWX2Ye71wKBgCCZ12uoeRYcbXKL2omt+AyXN6+dS3KAbi44RAfes9+hGq/a3rGN\nHLv9hyiK5PLacd0263aVNdrj0BQgMww3GbirMYQPxrweVuzUb465gierF5sOkLA6\n15OhQgNx27LAhM9+fV7q/nBKLEs83XSI6LtYyqAKc+WUO4fVTVpTrVaFAoGAdMVs\nBqXjvplpgsUKo66j+Nt3FPVhG+2A9YwBq1AshgWIlJvL9DMC0DlBjeyF9V1y+BIr\nI/F0z1v2TmEv8taka6EVHm7wGCNCaClT4xbrFefdos3w8+fduVdRyNpEtVbYWqGf\n5xlk5Vcxz7KoqpZf2gUXRjvHtzlGJon+n3pNOYcCgYAtWXCjdCPv8xY3xxtMumaP\npa/l6jBTZC1bBYkXrXW+GLKqVpcC9mWzSIMnJEAyfPM/X1AgW5YJp61JVTm4i0wB\nqDZO932AyRuzQjNBPC1tyKmwMqL5J4nlcIboMmg1qDSfK5g/mB3cG1t1RhR+DhAw\nU9Wjwenjb+c0Ukgg9PN2Xw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "tb-access-account@trailblazer-403720.iam.gserviceaccount.com",
+  "client_id": "111158692510472606731",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/tb-access-account%40trailblazer-403720.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

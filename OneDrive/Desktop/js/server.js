@@ -21,6 +21,11 @@ app.use(cors());
 app.use(express.static(path.join(__dirname,'public')));
 
 app.use(body_parser.json());
+app.use(require('express-session')({ 
+  secret: 'Enter your secret key',
+  resave: true,
+  saveUninitialized: true
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());

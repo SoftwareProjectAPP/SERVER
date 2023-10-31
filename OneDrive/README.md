@@ -137,34 +137,6 @@
             string that contains user id
     }
 
-# change password
-
-- ENDPOINT: /api/authenticate/forgot/answer
-
-- METHOD: POST
-
-- Purpose:
-    change password
-
-- Request:
-    JSON{
-        email:
-            string that describes email
-
-        new_password:
-            string that describes confirmed password
-    }
-
-- Response:
-    JSON{
-        success:
-            boolean flag that determines if request worked or not
-
-        error:
-            only included if success is failed
-            string that describes error message
-    }
-
 # check if security question answers are correct
 - ENDPOINT: /api/authenticate/forgot/change
 
@@ -183,6 +155,9 @@
 
         answer2:
             string that describes answer to security question 2
+
+        password:
+            string that contains new password
     }
 
 - Response:

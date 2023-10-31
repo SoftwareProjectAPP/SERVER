@@ -17,7 +17,7 @@ module.exports = (sequelize, type, Users, Achievements) =>{
             }
         },
         achievements_id: {
-            type: type.Integer,
+            type: type.INTEGER,
             allowNull: false,
             references: {
                 model: Achievements,

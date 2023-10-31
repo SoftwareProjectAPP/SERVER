@@ -35,7 +35,7 @@ router.get('/:version',async function(req,res){
             }]
         });
         // no trail information found
-        if(trails == null){
+        if(trails.length === 0){
             res.json({
                 'success': false,
                 'error': 'trails not found'
@@ -47,8 +47,10 @@ router.get('/:version',async function(req,res){
                 'current_version': false,
                 'new_version': old_v,
                 // encode trail data and send it
-                'trail_data': JSON.stringify(trails,null,3)
+                'trail_data': trails
             });
         }
     }
 });
+
+module.exports = router;

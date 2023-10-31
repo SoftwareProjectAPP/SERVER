@@ -4,25 +4,94 @@ const { Op } = require("sequelize");
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const config = require('../config/database');
 
 // register user route
 router.post('/register',async function(req,res){
-    // get email, password, first name, last name
-    // security question 1 and 2 and answers
+    console.log(req.body);
+    // check if email, password, first_name, last_name,
+    // and other fields are included
+    if(
+        !req.body.hasOwnProperty('email') ||
+        !req.body.hasOwnProperty('password') ||
+        !req.body.hasOwnProperty('first_name') ||
+        !req.body.hasOwnProperty('last_name') ||
+        !req.body.hasOwnProperty('answer1') ||
+        !req.body.hasOwnProperty('answer2') ||
+        !req.body.hasOwnProperty('question1') ||
+        !req.body.hasOwnProperty('question2')
+    ){
+        return res.json({
+            'success': false,
+            'error': 'missing fields'
+        })
+    }
+    // retrieve email and check if email is empty
     const email = req.body.email;
     if(email == ""){
-        res.json({
+        return res.json({
             'success':false,
             'error':'Missing email'
         });
     }
+    // get password and check if empty
     const password = req.body.password;
+    if(password == ""){
+        return res.json({
+            'success':false,
+            'error':'Missing password'
+        });
+    }
+    // check password requirements
+    if(password.length < 8){
+        return res.json({
+            'success': false,
+            'error': 'Password doesnt meet requirements'
+        });
+    }
     const first_name = req.body.first_name;
+    if(first_name == ""){
+        return res.json({
+            'success':false,
+            'error':'Missing first name'
+        });
+    }
     const last_name = req.body.last_name;
+    if(last_name == ""){
+        return res.json({
+            'success':false,
+            'error':'Missing last name'
+        });
+    }
     const a1 = req.body.answer1;
+    if(a1 == ""){
+        return res.json({
+            'success':false,
+            'error':'Missing security answer 1'
+        });
+    }
     const a2 = req.body.answer2;
+    if(a2 == ""){
+        return res.json({
+            'success':false,
+            'error':'Missing security answer 2'
+        });
+    }
     const q1 = req.body.question1;
+    if(q1 == ""){
+        return res.json({
+            'success':false,
+            'error':'Missing security question 1'
+        });
+    }
     const q2 = req.body.question2;
+    if(q2 == ""){
+        return res.json({
+            'success':false,
+            'error':'Missing security question 2'
+        });
+    }
 
     // check if user already exists
     const count = await Users.count({where:{email: email}});
@@ -64,24 +133,58 @@ router.post('/register',async function(req,res){
 
 // login user
 router.post('/login',async function(req,res){
+    // check if fields in request
+    if(
+        !req.body.hasOwnProperty('email') ||
+        !req.body.hasOwnProperty('password')
+    ){
+        return res.json({
+            'success': false,
+            'error': 'Missing fields'
+        })
+    }
     // get email and confirmed password
     const email = req.body.email;
     const password = req.body.password;
 
+    if(email == "")
+    {
+        return res.json({
+            'success': false,
+            'error': 'email cant be empty'
+        })
+    }
+
+    if(password == "")
+    {
+        return res.json({
+            'success': false,
+            'error': 'password cant be empty'
+        })
+    }
+
     // check if user is valid
     const user = await Users.findOne({
-        where:{email: email}
+        where:{
+            email: email
+        }
     });
     // user invalid
     if(user == null){
-        res.json({'success':false,'error':'Username or Password Incorrect'});  
+        res.json({
+            'success': false,
+            'error': 'Username or Password Incorrect'
+        });  
     // user valid
     }else{
         // check if password is valid
         bcrypt.compare(password,user.password,async (err,isMatch)=>{
             // password invalid
             if(err){
-                res.send({'success':false,'error':'Error Logging you in. Plase Contact Admin'});
+                res.json({
+                    'success':false,
+                    'error':'Error Logging you in. Plase Contact Admin'
+                });
             }
             // password valid
             if(isMatch){
@@ -92,14 +195,18 @@ router.post('/login',async function(req,res){
                     where: {
                         user_id: user.id,
                         expiration_date: {
-                            [Op.lte]: new Date()
+                            [Op.gt]: new Date()
                         }
                     }
                 });
+                console.log("count=" + count);
                 // valid token found
                 if(count > 0)
                 {
-                    res.json({'success':false,'error':'Already Logged In'});
+                    res.json({
+                        'success':false,
+                        'error':'Already Logged In'
+                    });
                 }
                 // valid token not found
                 else
@@ -129,49 +236,63 @@ router.post('/login',async function(req,res){
                     });
                 }
             }
-        });
-    }
-});
-
-// change password
-router.post('/forgot/answer', async function(req, res){
-    // get email and password
-    const email = req.body.email;
-    const new_password = req.body.password;
-
-    // get user
-    const user = await Users.findOne({
-        where: {
-            email: email
-        }
-    });
-    // invalid user
-    if(user == null){
-        res.json({
-            'success': false,
-            'error': 'User not found'
-        });
-    // valid user
-    }else{
-        // salt password
-        bcrypt.genSalt(10,function(err,salt){
-            // hash password
-            bcrypt.hash(new_password,salt,(err,hash)=>{
-                // change password
-                user.update({password:hash}).then(()=>{
-                    res.json({'success':true});
+            else{
+                res.json({
+                    'success': false,
+                    'error': 'Invalid username or password'
                 });
-            });
+            }
         });
     }
 });
 
 // check if answers are correct
 router.post('/forgot/change', async function(req, res){
+    // check if missing fields
+    if(
+        !req.body.hasOwnProperty('email') ||
+        !req.body.hasOwnProperty('answer1') ||
+        !req.body.hasOwnProperty('answer2') ||
+        !req.body.hasOwnProperty('password')
+    ){
+        return res.json({
+            'success': false,
+            'error': 'missing fields'
+        })
+    }
     // get email and answers
     const email = req.body.email;
     const a1 = req.body.answer1;
     const a2 = req.body.answer2;
+    const new_password = req.body.password;
+
+    if(email == ""){
+        return res.json({
+            'success': false,
+            'error': 'email cant be empty'
+        });
+    }
+
+    if(a1 == ""){
+        return res.json({
+            'success': false,
+            'error': 'answer to security question 1 cant be empty'
+        });
+    }
+
+    if(a2 == ""){
+        return res.json({
+            'success': false,
+            'error': 'answer to security question 2 cant be empty'
+        });
+    }
+
+    if(new_password == ""){
+        return res.json({
+            'success': false,
+            'error': 'password cant be empty'
+        });
+    }
 
     // get user
     const user = await Users.findOne({
@@ -190,10 +311,18 @@ router.post('/forgot/change', async function(req, res){
     }else{
         // correct answers
         if(user.answer1 == a1 && user.answer2 == a2){
-            res.json({
-                'success': true
+            // salt password
+            bcrypt.genSalt(10,function(err,salt){
+                // hash password
+                bcrypt.hash(new_password,salt,(err,hash)=>{
+                    // change password
+                    user.update({password:hash}).then(()=>{
+                        res.json({
+                            'success':true
+                        });
+                    });
+                });
             });
-            
         // wrong answers
         }else{
             res.json({
@@ -206,8 +335,22 @@ router.post('/forgot/change', async function(req, res){
 
 // get security questions for user
 router.post('/forgot',async function(req,res){
+    // check if email exist
+    if(!req.body.hasOwnProperty('email')){
+        return res.json({
+            'success': false,
+            'error': 'missing fields'
+        });
+    }
     // get email
     const email = req.body.email;
+
+    if(email == ""){
+        return res.json({
+            'success': false,
+            'error': 'email cant be empty'
+        });
+    }
     
     // get user with email
     const user = await Users.findOne({
@@ -269,3 +412,5 @@ router.get('/logout',passport.authenticate('jwt',{session:false}),function(req,r
         }
     });
 });
+
+module.exports = router;

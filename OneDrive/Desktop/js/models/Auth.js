@@ -24,7 +24,7 @@ module.exports = (sequelize, type, Users) => {
             references:
             {
                 model:Users,
-                key:'user_id'
+                key:'id'
             }
         },
         issue_date:

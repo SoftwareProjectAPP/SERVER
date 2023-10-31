@@ -4,6 +4,7 @@
 
 const Sequelize = require('sequelize');
 const config = require('./config/database');
+const fs = require('fs');
 
 // models
 const UserModel = require ('./models/Users');
@@ -13,6 +14,22 @@ const AchievementUserModel = require('./models/AchievementUser');
 const TrailModel = require('./models/Trail');
 const TrailCheckListModel = require('./models/TrailCheckList');
 
+const keyFilePath = './trailblazer-403720-3305da54bd19.json';
+
+const key = JSON.parse(fs.readFileSync(keyFilePath));
+
+const sequelize = new Sequelize({
+    dialect: 'mysql',
+    host: 'trailblazer-403720:us-central1:trailblazerinstance',
+    username: key.client_email,
+    password: key.private_key,
+    database: config.database,
+    dialectOptions: {
+        socketPath: '/cloudsql/trailblazer-403720:us-central1:trailblazerinstance'
+    }
+})
+
+/*
 // connect to database
 const sequelize = new Sequelize(
     config.database, 
@@ -21,7 +38,18 @@ const sequelize = new Sequelize(
 {             
     //host: For google
     //port:
-    dialect: 'mysql'
+    dialect: 'mysql',
+    host: '/cloudsq/{instance}',
+    timestamps: false,
+    dialectOptions: {
+        socketPath: '/cloudsql/{instance}'
+    }
+});*/
+
+sequelize.authenticate().then(()=>{
+    console.log("connected...");
+}).catch(err=>{
+    console.log("Error: " + err);
 });
 
 //Proof of connection, Also authenticates connection, Test using cmd: node index.js

@@ -2,6 +2,8 @@ const {Auth, Achievements, AchievementUser} = require('../sequelize');
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const { Op } = require("sequelize");
 
 // get achivements
 // protected route
@@ -17,9 +19,9 @@ router.get('/get', passport.authenticate('jwt',{session:false}) ,async function(
     where:{
       token: token,
       expiration_date: {
-          [Op.lte]: new Date()
+        [Op.gt]: new Date()
       },
-      user_id:decode.id
+      user_id: decode.id
     }}
   );
   
@@ -41,12 +43,10 @@ router.get('/get', passport.authenticate('jwt',{session:false}) ,async function(
       });
     // achivements retrieved
     }else{
-      // serialize achievements
-      const a1 = JSON.stringify(a,null,2);
       // send back to client
       res.json({
         'success': true,
-        'achievements': a1
+        'achievements': a
       });
     }
   }
@@ -61,16 +61,28 @@ router.post('/add',passport.authenticate('jwt',{session:false}), async function(
   const token = split[1];
   // decode token
   const decode = jwt.decode(token);
+  if(!req.body.hasOwnProperty('achievement_id')){
+    return res.json({
+      'success': false,
+      'error': 'missing fields'
+    });
+  }
   // get achievmeent id
   const achievement_id = req.body.achievement_id;
+  if(achievement_id == ""){
+    return res.json({
+      'success': false,
+      'error': 'achievement_id cant be empty'
+    });
+  }
   // find token that is valid
   const count = await Auth.count({
     where:{
-      token:token,
+      token: token,
       expiration_date: {
-          [Op.lte]: new Date()
+        [Op.gt]: new Date()
       },
-      user_id:decode.id
+      user_id: decode.id
     }}
   );
   
@@ -116,3 +128,5 @@ router.post('/add',passport.authenticate('jwt',{session:false}), async function(
     }
   }
 });
+
+module.exports = router;
