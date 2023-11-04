@@ -2,9 +2,37 @@
 
 ## achievements endpoint
 
+### Get user achievements
+
+- ENDPOINT: /apit/achievements/getuser
+
+- METHOD: GET
+
+- Purpose:
+    Get all achievements for user
+
+- Request:
+    JWT token passed as header
+
+- Response:
+    JSON {
+        success:
+            boolean flag that determines if request success or fails
+
+        error:
+            only included if success is false
+            string that contains error message
+
+        user_achievements:
+            array of JSON objects that has the following format:
+                achievements:
+                    title:
+                        string that contains title of achievements
+    }
+
 ### Get all achivements
 
-- ENDPOINT: /api/achievements/get
+- ENDPOINT: /api/achievements/getall
 
 - METHOD: GET
 

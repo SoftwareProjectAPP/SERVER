@@ -14,7 +14,7 @@ const getinfo = require('./routes/getinfo');
 const app = express();
 
 // port to be used
-const port = 3000;
+const port = 8080;
 
 app.use(cors());
 
@@ -45,3 +45,16 @@ app.get('/',(req,res)=>{
 app.listen(port,()=>{
   console.log("Server started at post: "+port);
 });
+
+/*
+to deploy image:
+  docker build . -t test
+  docker tag test us-central1-docker.pkg.dev/trailblazer-403720/test/test
+  docker push us-central1-docker.pkg.dev/trailblazer-403720/test/test
+
+  then open google cloud run
+  click on service
+  edit & deploy new revision
+  select latest image from artifact repository
+  try to access new URL
+*/

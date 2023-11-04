@@ -5,9 +5,65 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const { Op } = require("sequelize");
 
+router.get('/getuser',passport.authenticate('jwt',{session: false}), async function(req,res){
+  // get token
+  const h = req.header('Authorization');
+  const split = h.split('bearer ');
+  const token = split[1];
+  // decode token
+  const decode = jwt.decode(token);
+
+  const count = await Auth.count({
+    where:{
+      token: token,
+      expiration_date: {
+        [Op.gt]: new Date()
+      },
+      user_id: decode.id
+    }}
+  );
+
+  // no valid token found
+  if(count == 0){
+    res.json({
+      'success': false,
+      'error': 'user not logged in'
+    });
+  // valid token found
+  }else{
+    // get all achievements for user
+    const user_achievements = await AchievementUser.findAll({
+      attributes:['*'],
+      where: {
+        user_id: decode.id
+      },
+      include: [
+        {
+          model: Achievements,
+          attributes: ['title']
+        }
+      ]
+    });
+    // no achievements found
+    if(user_achievements == null){
+      res.json({
+        'success': false,
+        'error': 'achievements not found'
+      });
+    // achivements retrieved
+    }else{
+      // send back to client
+      res.json({
+        'success': true,
+        'user_achievements': user_achievements
+      });
+    }
+  }
+});
+
 // get achivements
 // protected route
-router.get('/get', passport.authenticate('jwt',{session:false}) ,async function(req, res){
+router.get('/getall', passport.authenticate('jwt',{session:false}) ,async function(req, res){
   // get token
   const h = req.header('Authorization');
   const split = h.split('bearer ');

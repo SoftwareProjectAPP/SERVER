@@ -14,6 +14,8 @@ const AchievementUserModel = require('./models/AchievementUser');
 const TrailModel = require('./models/Trail');
 const TrailCheckListModel = require('./models/TrailCheckList');
 
+const {Connector} = require("@google-cloud/cloud-sql-connector");
+
 const keyFilePath = './trailblazer-403720-3305da54bd19.json';
 
 const key = JSON.parse(fs.readFileSync(keyFilePath));
@@ -21,30 +23,32 @@ const key = JSON.parse(fs.readFileSync(keyFilePath));
 const sequelize = new Sequelize({
     dialect: 'mysql',
     host: 'trailblazer-403720:us-central1:trailblazerinstance',
-    username: key.client_email,
-    password: key.private_key,
+    username: 'quickstart-user',
+ //username: 'root',
+    password: 'password',
+   // password: 'root',
     database: config.database,
     dialectOptions: {
         socketPath: '/cloudsql/trailblazer-403720:us-central1:trailblazerinstance'
     }
-})
+});
 
-/*
-// connect to database
-const sequelize = new Sequelize(
-    config.database, 
-    config.database_username,
-    config.database_password,        //root is user and pass
-{             
-    //host: For google
-    //port:
-    dialect: 'mysql',
-    host: '/cloudsq/{instance}',
-    timestamps: false,
-    dialectOptions: {
-        socketPath: '/cloudsql/{instance}'
-    }
-});*/
+const connector = new Connector();
+
+sequelize.beforeConnect(async (config)=>{
+    const clientOpts = await connector.getOptions({
+        instanceConnectionName: "trailblazer-403720:us-central1:trailblazerinstance",
+        ipType: "PUBLIC"
+    });
+    config = {
+        ...clientOpts,
+        //user: key.client_email,
+        //password: key.private_key,
+        user: 'quickstart-user',
+        password: 'password',
+        ...config
+    };
+});
 
 sequelize.authenticate().then(()=>{
     console.log("connected...");
@@ -74,10 +78,17 @@ const TrailCheckList = TrailCheckListModel(sequelize,Sequelize,Trail);
 Trail.hasMany(TrailCheckList,{foreignKey: 'trailId'});
 TrailCheckList.belongsTo(Trail, {foreignKey: 'trailId'});
 
+AchievementUser.belongsTo(Achievements,{foreignKey: 'achievements_id'});
+AchievementUser.belongsTo(Users,{foreignKey: "user_id"});
+
+Achievements.hasMany(AchievementUser,{foreignKey: "achievements_id"});
+
 // synchronize tables
-sequelize.sync().then(()=>{
+/*sequelize.sync({force: true}).then(()=>{
     console.log("Tables synchronized");
-});
+}).catch(err=>{
+    console.log("Synchronization error: " + err);
+});*/
 
 
 // DELETES CONTENTS FROM TABLE
