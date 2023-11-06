@@ -13,17 +13,27 @@ module.exports = (sequelize, type) => {
             type: type.STRING,
             allowNull: false
         },
-        Achieve1: 
+        SandyTrailComplete: 
         {
         type: DataTypes.BOOLEAN,
         defaultValue: false
         },
-        Achieve2: 
+        LakeLoopComplete: 
         {
         type: DataTypes.BOOLEAN,
         defaultValue: false
         },
-        Achieve3: 
+        FernComplete: 
+        {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+        },
+        LoneStarComplete: 
+        {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+        },
+        NorthwesternComplete: 
         {
         type: DataTypes.BOOLEAN,
         defaultValue: false
