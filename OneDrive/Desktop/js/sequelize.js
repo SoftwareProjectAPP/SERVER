@@ -186,9 +186,11 @@ async function addachieve()
     await Achievements.sync({alter: true}).then((data) => {                            
     return Achievements.create({
         user_id: 1,
-        achieve1: true,
-        Achieve2: false,
-        Achieve3: true
+        SandyTrailComplete: true,
+        LakeLoopComplete: false,
+        FernComplete: true,
+        LoneStarComplete: false,
+        NorthwesternComplete: true
     });
 }).then((data) => {
     console.log(data.toJSON());
