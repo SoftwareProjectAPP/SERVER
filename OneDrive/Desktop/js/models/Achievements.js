@@ -8,9 +8,25 @@ module.exports = (sequelize, type) => {
             primaryKey:true,
             autoIncrement:true
         },
-        title:{
+        title:
+        {
             type: type.STRING,
             allowNull: false
+        },
+        Achieve1: 
+        {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+        },
+        Achieve2: 
+        {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+        },
+        Achieve3: 
+        {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
         }
     },
     {
