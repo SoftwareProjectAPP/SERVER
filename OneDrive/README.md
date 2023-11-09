@@ -2,34 +2,6 @@
 
 ## achievements endpoint
 
-### Get user achievements
-
-- ENDPOINT: /apit/achievements/getuser
-
-- METHOD: GET
-
-- Purpose:
-    Get all achievements for user
-
-- Request:
-    JWT token passed as header
-
-- Response:
-    JSON {
-        success:
-            boolean flag that determines if request success or fails
-
-        error:
-            only included if success is false
-            string that contains error message
-
-        user_achievements:
-            array of JSON objects that has the following format:
-                achievements:
-                    title:
-                        string that contains title of achievements
-    }
-
 ### Get all achivements
 
 - ENDPOINT: /api/achievements/getall
@@ -37,12 +9,14 @@
 - METHOD: GET
 
 - Purpose:
-    Get all achievements
+&emsp; Get all achievements
 
 - Request:
-    JWT token passed as header
+&emsp; JWT token passed as header
 
 - Response:
+
+
     JSON {
         
         success:
@@ -64,14 +38,18 @@
 - METHOD: POST
 
 - Purpose:
-    Add achievement for user
+&emsp; Add achievement for user
 
 - Request:
-    JWT token passed as header
-    achievement_id:
-        integer that describes achievement id
+
+    - JWT token passed as header
+    
+    - achievement_id:
+    &emsp; integer that describes achievement id
 
 - Response:
+
+
     JSON{
         success:
             boolean flag that determines if request worked or failed
@@ -90,13 +68,15 @@
 - METHOD: POST
 
 - Purpose:
-    register user
+&emsp; register user
 
 - Request:
+
+    
     JSON{
         email:
             string that describes email
-
+            
         password:
             string that describes confirmed password
 
@@ -120,6 +100,8 @@
     }
 
 - Response:
+    
+
     JSON{
         success:
             boolean flag that determines if request worked or not
@@ -136,9 +118,11 @@
 - METHOD: POST
 
 - Purpose:
-    login user
+&emsp; login user
 
 - Request:
+    
+
     JSON{
         email:
             string that describes email
@@ -148,6 +132,8 @@
     }
 
 - Response:
+    
+
     JSON{
         success:
             boolean flag that determines if request worked or not
@@ -171,9 +157,11 @@
 - METHOD: POST
 
 - Purpose:
-    check if answers are correct
+&emsp; check if answers are correct
 
 - Request:
+    
+
     JSON{
         email:
             string that describes email
@@ -189,6 +177,8 @@
     }
 
 - Response:
+    
+
     JSON{
         success:
             boolean flag that determines if request worked or not
@@ -206,15 +196,19 @@
 - METHOD: POST
 
 - Purpose:
-    get security questions for user
+&emsp; get security questions for user
 
 - Request:
+    
+
     JSON{
         email:
             string that describes email
     }
 
 - Response:
+    
+
     JSON{
         success:
             boolean flag that determines if request worked or not
@@ -239,12 +233,14 @@
 - METHOD: POST
 
 - Purpose:
-    logout user
+&emsp; logout user
 
 - Request:
-    JSON web token
+    &emsp; JSON web token
 
 - Response:
+    
+
     JSON{
         success:
             boolean flag that determines if request worked or not
@@ -261,14 +257,17 @@
 - METHOD: GET
 
 - Purpose:
-    Get all trail information if version doesnt match server version
+&emsp; Get all trail information if version doesnt match server version
 
 - Request:
-    version:
-        version number passed as parameter in URL
-        example version: 1.0.0
+    
+    - version:
+        &emsp; version number passed as parameter in URL
+        &emsp; example version: 1.0.0
 
 - Response:
+    
+
     JSON{
         success:
             boolean flag which determines if it worked or not

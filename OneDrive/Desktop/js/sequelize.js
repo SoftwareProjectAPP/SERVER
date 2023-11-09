@@ -10,7 +10,6 @@ const fs = require('fs');
 const UserModel = require ('./models/Users');
 const AuthModel = require('./models/Auth');
 const AchievementsModel = require('./models/Achievements');
-const AchievementUserModel = require('./models/AchievementUser');
 const TrailModel = require('./models/Trail');
 const TrailCheckListModel = require('./models/TrailCheckList');
 
@@ -69,8 +68,7 @@ sequelize.authenticate().then(()=>{
 // create models
 const Users = UserModel(sequelize,Sequelize);
 const Auth = AuthModel(sequelize,Sequelize,Users);
-const Achievements = AchievementsModel(sequelize,Sequelize);
-const AchievementUser = AchievementUserModel(sequelize,Sequelize,Users,Achievements);
+const Achievements = AchievementsModel(sequelize,Sequelize,Users);
 const Trail = TrailModel(sequelize,Sequelize);
 const TrailCheckList = TrailCheckListModel(sequelize,Sequelize,Trail);
 
@@ -78,10 +76,7 @@ const TrailCheckList = TrailCheckListModel(sequelize,Sequelize,Trail);
 Trail.hasMany(TrailCheckList,{foreignKey: 'trailId'});
 TrailCheckList.belongsTo(Trail, {foreignKey: 'trailId'});
 
-AchievementUser.belongsTo(Achievements,{foreignKey: 'achievements_id'});
-AchievementUser.belongsTo(Users,{foreignKey: "user_id"});
-
-Achievements.hasMany(AchievementUser,{foreignKey: "achievements_id"});
+Achievements.belongsTo(Users,{foreignKey: "user_id"});
 
 // synchronize tables
 /*sequelize.sync({force: true}).then(()=>{
@@ -92,6 +87,7 @@ Achievements.hasMany(AchievementUser,{foreignKey: "achievements_id"});
 
 
 // DELETES CONTENTS FROM TABLE
+/*
 async function deleteUsers() 
 {
     await Users.sync({alter: true}).then(() => 
@@ -209,7 +205,7 @@ async function addauth()
     console.log(data.toJSON());
 })
 }
-
+*/
 //CALL THESE ONE AT A TIME TO TEST
 
 //addauth();
@@ -232,5 +228,5 @@ async function addauth()
 // export all models for usage
 module.exports = 
 {
-  Users, Trail, TrailCheckList,Achievements, Auth, AchievementUser
+  Users, Trail, TrailCheckList,Achievements, Auth
 }

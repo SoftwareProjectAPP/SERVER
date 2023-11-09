@@ -1,6 +1,6 @@
 // achievement model
-module.exports = (sequelize, type) => {
-    return sequelize.define('Achievements', 
+module.exports = (sequelize, type, Users) => {
+    return sequelize.define('Achievements',
     {
         id:
         {
@@ -8,40 +8,44 @@ module.exports = (sequelize, type) => {
             primaryKey:true,
             autoIncrement:true
         },
-        title:
+        user_id:
         {
-            type: type.STRING,
-            allowNull: false
+            type: type.INTEGER,
+            allowNull: false,
+            references:
+            {
+                model: Users,
+                key: 'id'
+            }
         },
-        SandyTrailComplete: 
+        SandyTrailComplete:
         {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+            type: type.BOOLEAN,
+            defaultValue: false
         },
-        LakeLoopComplete: 
+        LakeLoopComplete:
         {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+            type: type.BOOLEAN,
+            defaultValue: false
         },
-        FernComplete: 
+        FernComplete:
         {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+            type: type.BOOLEAN,
+            defaultValue: false
         },
-        LoneStarComplete: 
+        LoneStarComplete:
         {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+            type: type.BOOLEAN,
+            defaultValue: false
         },
-        NorthwesternComplete: 
+        NorthwesternComplete:
         {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+            type: type.BOOLEAN,
+            defaultValue: false
         }
     },
     {
-        freezeTableName: true,                                              
-        timestamps: false,                                                  
-
+        freezeTableName: true,
+        timestamps: false,
     });
 }

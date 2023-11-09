@@ -26,6 +26,7 @@ router.get('/:version',async function(req,res){
                 'mileage',
                 'rating',
                 'is_wheelchair_accessible',
+                'id'
             ],
             include: [{
                 model: TrailCheckList,

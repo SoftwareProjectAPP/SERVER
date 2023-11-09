@@ -1,6 +1,6 @@
 // trail information model
 module.exports = (sequelize, type) =>{
-    return sequelize.define('trail', 
+    return sequelize.define('trail',
     {
         id:
         {

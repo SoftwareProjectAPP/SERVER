@@ -1,4 +1,4 @@
-const {Users, Auth} = require('../sequelize');
+const {Users, Auth, Achievements} = require('../sequelize');
 const bcrypt = require('bcryptjs');
 const { Op } = require("sequelize");
 const express = require('express');
@@ -105,9 +105,9 @@ router.post('/register',async function(req,res){
     // user doesnt exist
     }else{
         // generate salt
-        bcrypt.genSalt(10,function(err,salt){
+        bcrypt.genSalt(10,async function(err,salt){
             // hash password
-            bcrypt.hash(password,salt,(err,hash)=>{
+            bcrypt.hash(password,salt,async (err,hash)=>{
                 // save user
                 const user = Users.build({
                     email:email,
@@ -120,8 +120,24 @@ router.post('/register',async function(req,res){
                     answer2: a2
                 });
                 // user saved worked
-                user.save().then(task=>{
-                    res.send({'success':true,'message':'User Saved'});
+                user.save().then(async (task)=>{
+                    // get user id from email
+                    const u = await Users.findOne({
+                        where:{
+                            email: email
+                        }
+                    });
+                    // create achievement row for user
+                    const a = Achievements.build({
+                        user_id: u.id
+                    });
+                    // save achievement
+                    a.save().then((t)=>{
+                        res.send({'success':true,'message':'User Saved'});
+                    }).catch(e=>{
+                        // achievement save failed
+                        res.send({'success':false,'error':'user creation failed. contact admin'});
+                    });
                 // user saved failed
                 }).catch(error=>{
                     res.send({'success':false,'error':'user creation failed. contact admin'});

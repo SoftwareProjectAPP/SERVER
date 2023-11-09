@@ -1,11 +1,12 @@
-const {Auth, Achievements, AchievementUser} = require('../sequelize');
+const {Auth, Achievements} = require('../sequelize');
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const { Op } = require("sequelize");
 
-router.get('/getuser',passport.authenticate('jwt',{session: false}), async function(req,res){
+// get all achievements
+router.get('/getall',passport.authenticate('jwt',{session: false}), async function(req,res){
   // get token
   const h = req.header('Authorization');
   const split = h.split('bearer ');
@@ -32,17 +33,17 @@ router.get('/getuser',passport.authenticate('jwt',{session: false}), async funct
   // valid token found
   }else{
     // get all achievements for user
-    const user_achievements = await AchievementUser.findAll({
-      attributes:['*'],
+    const user_achievements = await Achievemens.findAll({
+      attributes:[
+        'SandyTrailComplete',
+        'LakeLoopComplete',
+        'FernComplete',
+        'LoneStarComplete',
+        'NorthwesternComplete'
+      ],
       where: {
         user_id: decode.id
-      },
-      include: [
-        {
-          model: Achievements,
-          attributes: ['title']
-        }
-      ]
+      }
     });
     // no achievements found
     if(user_achievements == null){
@@ -56,53 +57,6 @@ router.get('/getuser',passport.authenticate('jwt',{session: false}), async funct
       res.json({
         'success': true,
         'user_achievements': user_achievements
-      });
-    }
-  }
-});
-
-// get achivements
-// protected route
-router.get('/getall', passport.authenticate('jwt',{session:false}) ,async function(req, res){
-  // get token
-  const h = req.header('Authorization');
-  const split = h.split('bearer ');
-  const token = split[1];
-  // decode token
-  const decode = jwt.decode(token);
-  // find token that is valid
-  const count = await Auth.count({
-    where:{
-      token: token,
-      expiration_date: {
-        [Op.gt]: new Date()
-      },
-      user_id: decode.id
-    }}
-  );
-  
-  // no valid token found
-  if(count == 0){
-    res.json({
-      'success': false,
-      'error': 'user not logged in'
-    });
-  // valid token found
-  }else{
-    // get all achievements
-    const a = await Achievements.findAll();
-    // no achievements found
-    if(a == null){
-      res.json({
-        'success': false,
-        'error': 'achievements not found'
-      });
-    // achivements retrieved
-    }else{
-      // send back to client
-      res.json({
-        'success': true,
-        'achievements': a
       });
     }
   }
