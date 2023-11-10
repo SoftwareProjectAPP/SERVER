@@ -406,7 +406,7 @@ router.get('/logout',passport.authenticate('jwt',{session:false}),function(req,r
         where:{
             token:token,
             expiration_date: {
-                [Op.lte]: new Date()
+                [Op.gt]: new Date()
             },
             user_id:decode.id
         }}
