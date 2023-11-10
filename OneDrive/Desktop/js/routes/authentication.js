@@ -420,9 +420,15 @@ router.get('/logout',passport.authenticate('jwt',{session:false}),function(req,r
         // valid token found
         }else{
             // expire token
-            r.update({'expiration_date':new Date()}).then(()=>{
+            r['expiration_date'] = new Date();
+            r.save().then(()=>{
                 res.json({
-                    'success':true
+                    'success': true
+                });
+            }).catch((e)=>{
+                res.json({
+                    'success': false,
+                    'error': 'logout error'
                 });
             });
         }
