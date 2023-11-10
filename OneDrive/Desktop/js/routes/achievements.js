@@ -33,7 +33,7 @@ router.get('/getall',passport.authenticate('jwt',{session: false}), async functi
   // valid token found
   }else{
     // get all achievements for user
-    const user_achievements = await Achievemens.findAll({
+    const user_achievements = await Achievements.findAll({
       attributes:[
         'SandyTrailComplete',
         'LakeLoopComplete',
@@ -71,18 +71,31 @@ router.post('/add',passport.authenticate('jwt',{session:false}), async function(
   const token = split[1];
   // decode token
   const decode = jwt.decode(token);
-  if(!req.body.hasOwnProperty('achievement_id')){
+  if(!req.body.hasOwnProperty('achievement_name')){
     return res.json({
       'success': false,
       'error': 'missing fields'
     });
   }
   // get achievmeent id
-  const achievement_id = req.body.achievement_id;
-  if(achievement_id == ""){
+  const achievement_name = req.body.achievement_name;
+  if(achievement_name == ""){
     return res.json({
       'success': false,
-      'error': 'achievement_id cant be empty'
+      'error': 'achievement_name cant be empty'
+    });
+  }
+
+  if(
+    achievement_name !== "SandyTrailComplete" &&
+    achievement_name !== "LakeLoopComplete" &&
+    achievement_name !== "FernComplete" &&
+    achievement_name !== "LoneStarComplete" &&
+    achievement_name !== "NorthwesternComplete"
+  ){
+    return res.json({
+      'success': false,
+      'error': 'invalid achievement name'
     });
   }
   // find token that is valid
@@ -104,38 +117,24 @@ router.post('/add',passport.authenticate('jwt',{session:false}), async function(
     });
   // valid token found
   }else{
-    // check if achivement_id is valid
-    const c = await Achievements.count({
-      where: {
-        id: achievement_id
+    Achievements.findOne({
+      where:{
+        user_id: decode.id
       }
-    });
-    // not valid
-    if(c == 0){
-      res.json({
-        'success': false,
-        'error': 'achievement invalid'
-      });
-    // valid
-    }else{
-      // map achievement to user
-      const a1 = AchievementUser.build({
-        user_id: decode.id,
-        achievements_id: achievement_id
-      });
-      // mapping worked
-      a1.save().then(t=>{
-        res.json({
-          'success': true
-        });
-      // mapping failed
-      }).catch(error=>{
+    }).then(r=>{
+      if(r == null){
         res.json({
           'success': false,
-          'error': 'error adding achievement. contact admin'
+          'error': 'Invalid achievement name'
         });
-      })
-    }
+      }else{
+        r.update({achievement_name: true}).then(()=>{
+          res.json({
+            'success': true
+          });
+        });
+      }
+    });
   }
 });
 

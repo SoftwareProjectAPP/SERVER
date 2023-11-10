@@ -83,8 +83,8 @@ Achievements.belongsTo(Users,{foreignKey: "user_id"});
     console.log("Tables synchronized");
 }).catch(err=>{
     console.log("Synchronization error: " + err);
-});*/
-
+});
+*/
 
 // DELETES CONTENTS FROM TABLE
 /*
