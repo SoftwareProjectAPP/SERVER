@@ -29,7 +29,7 @@
         achievements:
             array of JSON objects that has the following format:
                 title:
-                    string that describes name of achivement
+                    string that describes name of achievement
     }
 
 # add achievement
@@ -44,8 +44,8 @@
 
     - JWT token passed as header
     
-    - achievement_id:
-    &emsp; integer that describes achievement id
+    - achievement_name:
+    &emsp; string that describes achievement name
 
 - Response:
 
