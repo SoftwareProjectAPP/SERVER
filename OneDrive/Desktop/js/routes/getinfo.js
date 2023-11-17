@@ -1,56 +1,90 @@
-const {Trail, TrailCheckList} = require('../sequelize');
+const {Trail, TrailCheckList, Version} = require('../sequelize');
 const express = require('express');
 const router = express.Router();
 
 // get updated info from db
 router.get('/:version',async function(req,res){
-    // get user current version
-    const v = req.params.version;
-    // get db current version
-    const old_v = '1.0.0';
-    // versions match
-    if (old_v === v){
-        res.json({
-            'success': true,
-            'current_version': true
-        });
-    // versions dont match
-    }else{
-        // get all trail information
-        const trails = await Trail.findAll({
+    try{
+        // get user current version
+        const v = req.params.version;
+        // get db current version
+        const r = await Version.findOne({
             attributes: [
-                'image_URL',
-                'audio_URL',
-                'name',
-                'description',
-                'mileage',
-                'rating',
-                'is_wheelchair_accessible',
-                'id'
+                'db_version'
             ],
-            include: [{
-                model: TrailCheckList,
-                attributes: [
-                    'item'
-                ]
-            }]
+            where: {
+                id: 1
+            }
         });
-        // no trail information found
-        if(trails.length === 0){
-            res.json({
+        // check if data retrieved worked
+        if(r == null)
+        {
+            return res.json({
                 'success': false,
-                'error': 'trails not found'
-            });
-        // trail information found
-        }else{
-            res.json({
-                'success': true,
-                'current_version': false,
-                'new_version': old_v,
-                // encode trail data and send it
-                'trail_data': trails
+                'error': 'cant retrieve database version'
             });
         }
+        // print data for debugging
+        console.log("r = ");
+        console.log(r);
+        console.log("db_Version = ");
+        console.log(r.db_version);
+        //const old_v = '1.0.0';
+        // versions match
+        if (r.db_version === v){
+            res.json({
+                'success': true,
+                'current_version': true
+            });
+        // versions dont match
+        }else{
+            // get all trail information
+            const trails = await Trail.findAll({
+                attributes: [
+                    'image_URL',
+                    'image_URL2',
+                    'image_URL3',
+                    'image_URL4',
+                    'image_URL5',
+                    'audio_URL',
+                    'name',
+                    'description',
+                    'mileage',
+                    'rating',
+                    'is_wheelchair_accessible',
+                    'id'
+                ],
+                include: [{
+                    model: TrailCheckList,
+                    attributes: [
+                        'item'
+                    ]
+                }]
+            });
+            // no trail information found
+            if(trails.length === 0){
+                res.json({
+                    'success': false,
+                    'error': 'trails not found'
+                });
+            // trail information found
+            }else{
+                res.json({
+                    'success': true,
+                    'current_version': false,
+                    'new_version': r.db_version,
+                    // encode trail data and send it
+                    'trail_data': trails
+                });
+            }
+        }
+    }catch(err){
+        console.log("error: ");
+        console.log(err);
+        return res.json({
+            'success': false,
+            'error': err
+        });
     }
 });
 
@@ -71,7 +105,7 @@ module.exports = router;
     11. add data to each fields
     
     To delete columns:
-    run the command "alter table <tablename> drop column <column name>" 
+    run the command "alter table <tablename> drop column <column name>"
     replace <tablename> with table name
     replace <column name> with the column name to remove
 

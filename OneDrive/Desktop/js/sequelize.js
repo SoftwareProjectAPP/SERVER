@@ -12,6 +12,7 @@ const AuthModel = require('./models/Auth');
 const AchievementsModel = require('./models/Achievements');
 const TrailModel = require('./models/Trail');
 const TrailCheckListModel = require('./models/TrailCheckList');
+const VersionModel = require('./models/Version');
 
 const {Connector} = require("@google-cloud/cloud-sql-connector");
 
@@ -19,6 +20,7 @@ const keyFilePath = './trailblazer-403720-3305da54bd19.json';
 
 const key = JSON.parse(fs.readFileSync(keyFilePath));
 
+// connect to remote database
 const sequelize = new Sequelize({
     dialect: 'mysql',
     host: 'trailblazer-403720:us-central1:trailblazerinstance',
@@ -34,6 +36,7 @@ const sequelize = new Sequelize({
 
 const connector = new Connector();
 
+// setup required to connect to google cloud SQL
 sequelize.beforeConnect(async (config)=>{
     const clientOpts = await connector.getOptions({
         instanceConnectionName: "trailblazer-403720:us-central1:trailblazerinstance",
@@ -49,6 +52,7 @@ sequelize.beforeConnect(async (config)=>{
     };
 });
 
+// connect to database
 sequelize.authenticate().then(()=>{
     console.log("connected...");
 }).catch(err=>{
@@ -71,7 +75,7 @@ const Auth = AuthModel(sequelize,Sequelize,Users);
 const Achievements = AchievementsModel(sequelize,Sequelize,Users);
 const Trail = TrailModel(sequelize,Sequelize);
 const TrailCheckList = TrailCheckListModel(sequelize,Sequelize,Trail);
-
+const Version = VersionModel(sequelize, Sequelize);
 // connect trails and trail checklist
 Trail.hasMany(TrailCheckList,{foreignKey: 'trailId'});
 TrailCheckList.belongsTo(Trail, {foreignKey: 'trailId'});
@@ -83,8 +87,7 @@ Achievements.belongsTo(Users,{foreignKey: "user_id"});
     console.log("Tables synchronized");
 }).catch(err=>{
     console.log("Synchronization error: " + err);
-});
-*/
+});*/
 
 // DELETES CONTENTS FROM TABLE
 /*
@@ -226,7 +229,7 @@ async function addauth()
 //sequelize.query('SET GLOBAL FOREIGN_KEY_CHECKS = 1;', { raw: true });
 
 // export all models for usage
-module.exports = 
+module.exports =
 {
-  Users, Trail, TrailCheckList,Achievements, Auth
+    Users, Trail, TrailCheckList,Achievements, Auth, Version
 }

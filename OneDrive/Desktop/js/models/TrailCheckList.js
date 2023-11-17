@@ -21,5 +21,8 @@ module.exports = (sequelize, type, Trail) => {
                 key: 'id'
             }
         }
+    },{
+        freezeTableName: true,
+        timestamps: false
     });
 };

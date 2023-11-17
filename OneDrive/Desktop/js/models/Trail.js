@@ -12,6 +12,22 @@ module.exports = (sequelize, type) =>{
             type: type.STRING,
             allowNull: false
         },
+        image_URL2: {
+            type: type.STRING,
+            allowNull: false
+        },
+        image_URL3: {
+            type: type.STRING,
+            allowNull: false
+        },
+        image_URL4: {
+            type: type.STRING,
+            allowNull: false
+        },
+        image_URL5: {
+            type: type.STRING,
+            allowNull: false
+        },
         audio_URL: {
             type: type.STRING,
             allowNull: false
@@ -38,8 +54,7 @@ module.exports = (sequelize, type) =>{
         }
     },
     {
-        freezeTableName: true,                                              
-        timestamps: false,                                                 
-
+        freezeTableName: true,
+        timestamps: false,
     });
 };
